@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Journey with Leo 🐱</title>
+  <meta name="description" content="An intimate love story about two souls and their black cat.">
+  <meta name="theme-color" content="#0f0f1a">
+  
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐱</text></svg>">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            'display': ['Crimson Text', 'serif'],
+            'body': ['Quicksand', 'sans-serif'],
+          },
+        },
+      },
+    }
+  </script>
+  
+  <style>
+    * { box-sizing: border-box; }
+    
+    body {
+      margin: 0;
+      padding: 0;
+      background: #0f0f1a;
+      font-family: 'Quicksand', sans-serif;
+      overflow-x: hidden;
+      min-height: 100vh;
+      color: white;
+    }
+    
+    .font-display { font-family: 'Crimson Text', serif; }
+    .pixel-art { image-rendering: pixelated; image-rendering: crisp-edges; }
+    
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 0.8; }
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    
+    @keyframes pulse-soft {
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.05); }
+    }
+    
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      15% { transform: scale(1.15); }
+      30% { transform: scale(1); }
+      45% { transform: scale(1.1); }
+    }
+    
+    @keyframes rain {
+      0% { transform: translateY(-10px); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(100vh); opacity: 0; }
+    }
+    
+    @keyframes snow {
+      0% { transform: translateY(-10px) translateX(0); opacity: 0; }
+      10% { opacity: 0.8; }
+      90% { opacity: 0.8; }
+      100% { transform: translateY(100vh) translateX(20px); opacity: 0; }
+    }
+    
+    @keyframes breathe {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+    
+    .animate-fade-in { animation: fadeIn 0.5s ease-out; }
+    .animate-fade-slide-up { animation: fadeSlideUp 0.6s ease-out; }
+    .animate-float { animation: float 3s ease-in-out infinite; }
+    .animate-breathe { animation: breathe 4s ease-in-out infinite; }
+    .animate-pulse-soft { animation: pulse-soft 2s ease-in-out infinite; }
+    .animate-heartbeat { animation: heartbeat 1.5s ease-in-out infinite; }
+    
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 2px; }
+    
+    ::selection { background: rgba(236, 72, 153, 0.3); color: white; }
+    button { -webkit-tap-highlight-color: transparent; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  
+  <script type="text/babel">
+    /**
+     * 🐱 JOURNEY WITH LEO - Romantic Interactive Edition
+     * A love story in seven chapters
+     */
+    
+    const { useState, useEffect, useCallback, useRef } = React;
+    
+    // ============================================================
+    // 🌍 LOCALIZATION - Romantic Text
+    // ============================================================
+    const LANG = {
+      en: {
+        title: "Journey with Leo",
+        subtitle: "A love story in seven chapters",
+        
+        ui: {
+          continue: "Continue",
+          back: "Back",
+          album: "Memories",
+          close: "Close",
+          petLeo: "Pet Leo",
+          locked: "Locked",
+          tapToContinue: "tap to continue",
+        },
+        
+        leo: {
+          idle: "...",
+          calm: "purrs softly",
+          playful: "chases invisible butterflies",
+          worried: "stays close to you both",
+          sleepy: "dreams of sunbeams",
+          loving: "slow blink... I love you",
+          curious: "tilts head gently",
+          comfort: "nuzzles your hand",
+        },
+        
+        chapters: {
+          1: { name: "Rain", theme: "When our hearts first touched" },
+          2: { name: "Sun", theme: "Learning to love your mornings" },
+          3: { name: "Storm", theme: "Love finds its way back" },
+          4: { name: "Snow", theme: "Your warmth is my home" },
+          5: { name: "Spring", theme: "Growing our dreams together" },
+          6: { name: "Home", theme: "Wherever you are" },
+          7: { name: "Forever", theme: "Every day, I choose you" },
+        },
+        
+        memories: {
+          1: { title: "First Touch", text: "Your hand brushed mine. My heart knew." },
+          2: { title: "Morning Light", text: "I love the way sunlight paints your face." },
+          3: { title: "Bridge of Love", text: "Leo sat between us. Love found a way." },
+          4: { title: "Winter Kiss", text: "Snowflakes on your eyelashes. Perfect." },
+          5: { title: "Our Garden", text: "Every flower reminds me of your smile." },
+          6: { title: "Home", text: "Home is the sound of your heartbeat." },
+          7: { title: "Always", text: "In every lifetime, I would find you." },
+        },
+      },
+    };
+    
+    const t = (path) => path.split('.').reduce((obj, key) => obj?.[key], LANG.en) || path;
+    
+    // ============================================================
+    // 💾 PERSISTENCE
+    // ============================================================
+    const STORAGE_KEY = 'journey_leo_v3';
+    
+    const defaultState = {
+      currentChapter: 1,
+      unlockedChapters: [1],
+      completedChapters: [],
+      memories: [],
+      leoMood: 'calm',
+      choices: {},
+      leoInteractions: 0,
+    };
+    
+    const loadGame = () => {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) return { ...defaultState, ...JSON.parse(saved) };
+      } catch (e) {}
+      return { ...defaultState };
+    };
+    
+    const saveGame = (state) => {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+    };
+    
+    // ============================================================
+    // 🎨 PIXEL ART COMPONENTS
+    // ============================================================
+    
+    const PixelHeart = ({ filled, size = 16, animate, className = '' }) => (
+      <svg width={size} height={size} viewBox="0 0 16 16" 
+           className={`pixel-art transition-all duration-300 ${animate ? 'animate-heartbeat' : ''} ${className}`}>
+        <g fill={filled ? '#ff6b9d' : '#3a3a5a'}>
+          <rect x="2" y="4" width="2" height="2" />
+          <rect x="4" y="2" width="4" height="2" />
+          <rect x="10" y="2" width="2" height="2" />
+          <rect x="12" y="4" width="2" height="2" />
+          <rect x="2" y="6" width="12" height="2" />
+          <rect x="2" y="8" width="12" height="2" />
+          <rect x="4" y="10" width="8" height="2" />
+          <rect x="6" y="12" width="4" height="2" />
+        </g>
+        {filled && <g fill="#ffb3c6" opacity="0.6"><rect x="4" y="4" width="4" height="2" /></g>}
+      </svg>
+    );
+    
+    const PixelStar = ({ filled, size = 16, className = '' }) => (
+      <svg width={size} height={size} viewBox="0 0 16 16" className={`pixel-art ${className}`}>
+        <g fill={filled ? '#ffd93d' : '#3a3a5a'}>
+          <rect x="7" y="0" width="2" height="4" />
+          <rect x="0" y="6" width="4" height="2" />
+          <rect x="12" y="6" width="4" height="2" />
+          <rect x="4" y="4" width="8" height="6" />
+          <rect x="2" y="10" width="4" height="2" />
+          <rect x="10" y="10" width="4" height="2" />
+          <rect x="0" y="12" width="4" height="2" />
+          <rect x="12" y="12" width="4" height="2" />
+        </g>
+      </svg>
+    );
+    
+    const PixelLock = ({ size = 16 }) => (
+      <svg width={size} height={size} viewBox="0 0 16 16" className="pixel-art">
+        <rect x="4" y="2" width="2" height="2" fill="#5a5a7a" />
+        <rect x="10" y="2" width="2" height="2" fill="#5a5a7a" />
+        <rect x="2" y="4" width="2" height="4" fill="#5a5a7a" />
+        <rect x="12" y="4" width="2" height="4" fill="#5a5a7a" />
+        <rect x="4" y="4" width="8" height="2" fill="#4a4a6a" />
+        <rect x="2" y="8" width="12" height="6" fill="#6a6a8a" />
+        <rect x="7" y="10" width="2" height="2" fill="#3a3a5a" />
+      </svg>
+    );
+    
+    const PixelMemory = ({ collected, size = 20 }) => (
+      <svg width={size} height={size} viewBox="0 0 20 20" className="pixel-art">
+        <rect x="2" y="2" width="16" height="16" rx="2" fill={collected ? '#4a3a6a' : '#2a2a3a'} />
+        <rect x="4" y="4" width="12" height="8" fill={collected ? '#6a5a8a' : '#3a3a4a'} />
+        {collected && (
+          <>
+            <rect x="6" y="6" width="3" height="3" fill="#a890c0" />
+            <rect x="11" y="5" width="2" height="4" fill="#80c090" />
+            <rect x="7" y="14" width="6" height="2" fill="#8a7aaa" />
+          </>
+        )}
+      </svg>
+    );
+    
+    // ============================================================
+    // 👫 PIXEL CHARACTERS - Boy & Girl
+    // ============================================================
+    
+    // Boy Character (taller, blue/purple tones)
+    const PixelBoy = ({ size = 32, className = '' }) => {
+      const [blink, setBlink] = useState(false);
+      
+      useEffect(() => {
+        const interval = setInterval(() => {
+          setBlink(true);
+          setTimeout(() => setBlink(false), 150);
+        }, 3000 + Math.random() * 2000);
+        return () => clearInterval(interval);
+      }, []);
+      
+      return (
+        <svg width={size} height={size * 1.5} viewBox="0 0 24 36" className={`pixel-art ${className}`}>
+          {/* Hair */}
+          <rect x="6" y="2" width="12" height="4" fill="#2a2a3a" />
+          <rect x="5" y="4" width="2" height="3" fill="#2a2a3a" />
+          <rect x="17" y="4" width="2" height="3" fill="#2a2a3a" />
+          <rect x="4" y="6" width="16" height="2" fill="#2a2a3a" />
+          
+          {/* Face */}
+          <rect x="6" y="6" width="12" height="10" fill="#f5d0b0" />
+          <rect x="5" y="8" width="1" height="6" fill="#f5d0b0" />
+          <rect x="18" y="8" width="1" height="6" fill="#f5d0b0" />
+          
+          {/* Eyes */}
+          <rect x="8" y="9" width="2" height="2" fill={blink ? "#f5d0b0" : "#4a4a6a"} />
+          <rect x="14" y="9" width="2" height="2" fill={blink ? "#f5d0b0" : "#4a4a6a"} />
+          {!blink && (
+            <>
+              <rect x="8" y="9" width="1" height="1" fill="#fff" />
+              <rect x="14" y="9" width="1" height="1" fill="#fff" />
+            </>
+          )}
+          
+          {/* Smile */}
+          <rect x="10" y="13" width="4" height="1" fill="#d4a088" />
+          
+          {/* Shirt */}
+          <rect x="6" y="16" width="12" height="10" fill="#6366f1" />
+          <rect x="4" y="18" width="2" height="6" fill="#6366f1" />
+          <rect x="18" y="18" width="2" height="6" fill="#6366f1" />
+          <rect x="10" y="16" width="4" height="2" fill="#818cf8" />
+          
+          {/* Pants */}
+          <rect x="6" y="26" width="5" height="6" fill="#3a3a5a" />
+          <rect x="13" y="26" width="5" height="6" fill="#3a3a5a" />
+          
+          {/* Shoes */}
+          <rect x="5" y="32" width="6" height="2" fill="#2a2a3a" />
+          <rect x="13" y="32" width="6" height="2" fill="#2a2a3a" />
+        </svg>
+      );
+    };
+    
+    // Girl Character (dress, pink/coral tones, longer hair)
+    const PixelGirl = ({ size = 32, className = '' }) => {
+      const [blink, setBlink] = useState(false);
+      
+      useEffect(() => {
+        const interval = setInterval(() => {
+          setBlink(true);
+          setTimeout(() => setBlink(false), 150);
+        }, 2500 + Math.random() * 2000);
+        return () => clearInterval(interval);
+      }, []);
+      
+      return (
+        <svg width={size} height={size * 1.5} viewBox="0 0 24 36" className={`pixel-art ${className}`}>
+          {/* Hair - longer */}
+          <rect x="6" y="1" width="12" height="3" fill="#5a3a2a" />
+          <rect x="4" y="3" width="16" height="4" fill="#5a3a2a" />
+          <rect x="3" y="6" width="3" height="10" fill="#5a3a2a" />
+          <rect x="18" y="6" width="3" height="10" fill="#5a3a2a" />
+          <rect x="4" y="14" width="2" height="4" fill="#5a3a2a" />
+          <rect x="18" y="14" width="2" height="4" fill="#5a3a2a" />
+          
+          {/* Face */}
+          <rect x="6" y="5" width="12" height="10" fill="#f8d8c0" />
+          <rect x="5" y="7" width="1" height="6" fill="#f8d8c0" />
+          <rect x="18" y="7" width="1" height="6" fill="#f8d8c0" />
+          
+          {/* Eyes */}
+          <rect x="8" y="8" width="2" height="2" fill={blink ? "#f8d8c0" : "#4a6a4a"} />
+          <rect x="14" y="8" width="2" height="2" fill={blink ? "#f8d8c0" : "#4a6a4a"} />
+          {!blink && (
+            <>
+              <rect x="8" y="8" width="1" height="1" fill="#fff" />
+              <rect x="14" y="8" width="1" height="1" fill="#fff" />
+            </>
+          )}
+          
+          {/* Blush */}
+          <rect x="6" y="10" width="2" height="1" fill="#ffb0b0" opacity="0.6" />
+          <rect x="16" y="10" width="2" height="1" fill="#ffb0b0" opacity="0.6" />
+          
+          {/* Smile */}
+          <rect x="10" y="12" width="4" height="1" fill="#d8a090" />
+          
+          {/* Dress */}
+          <rect x="6" y="15" width="12" height="6" fill="#f472b6" />
+          <rect x="4" y="17" width="2" height="4" fill="#f472b6" />
+          <rect x="18" y="17" width="2" height="4" fill="#f472b6" />
+          <rect x="4" y="21" width="16" height="8" fill="#ec4899" />
+          <rect x="3" y="23" width="18" height="4" fill="#f472b6" />
+          
+          {/* Shoes */}
+          <rect x="6" y="29" width="4" height="3" fill="#6a3a4a" />
+          <rect x="14" y="29" width="4" height="3" fill="#6a3a4a" />
+        </svg>
+      );
+    };
+    
+    // Couple Together
+    const PixelCouple = ({ size = 32, holding = false, className = '' }) => (
+      <div className={`flex items-end gap-0 ${className}`}>
+        <PixelBoy size={size} />
+        {holding && (
+          <div className="relative -mx-2 mb-4">
+            <PixelHeart filled size={12} animate className="animate-float" />
+          </div>
+        )}
+        <PixelGirl size={size} />
+      </div>
+    );
+    
+    // ============================================================
+    // 🐱 LEO
+    // ============================================================
+    const PixelLeo = ({ mood = 'calm', size = 48, className = '', onClick }) => {
+      const [blink, setBlink] = useState(false);
+      const [tail, setTail] = useState(0);
+      
+      useEffect(() => {
+        const interval = setInterval(() => {
+          setBlink(true);
+          setTimeout(() => setBlink(false), 150);
+        }, 2500 + Math.random() * 2000);
+        return () => clearInterval(interval);
+      }, []);
+      
+      useEffect(() => {
+        const speed = mood === 'playful' ? 200 : mood === 'worried' ? 600 : 400;
+        const interval = setInterval(() => setTail(p => (p + 1) % 3), speed);
+        return () => clearInterval(interval);
+      }, [mood]);
+      
+      const moodStyles = {
+        calm: { eyes: '#ffc93d', cheeks: false, mouth: 'neutral' },
+        playful: { eyes: '#ffd93d', cheeks: true, mouth: 'happy' },
+        worried: { eyes: '#ff9f6b', cheeks: false, mouth: 'worried' },
+        sleepy: { eyes: '#6a6a8a', cheeks: false, mouth: 'neutral', half: true },
+        loving: { eyes: '#ff6b9d', cheeks: true, mouth: 'happy' },
+        curious: { eyes: '#90d0ff', cheeks: false, mouth: 'neutral' },
+        comfort: { eyes: '#a0d0a0', cheeks: true, mouth: 'happy' },
+      };
+      
+      const style = moodStyles[mood] || moodStyles.calm;
+      const eyeColor = blink ? '#2a2a3a' : style.eyes;
+      const tailX = [-1, 0, 1][tail];
+      
+      return (
+        <svg width={size} height={size} viewBox="0 0 32 32"
+             className={`pixel-art transition-all duration-300 ${onClick ? 'cursor-pointer' : ''} ${className}`}
+             onClick={onClick}>
+          {/* Ears */}
+          <rect x="5" y="3" width="3" height="3" fill="#1a1a2a" />
+          <rect x="7" y="4" width="3" height="3" fill="#1a1a2a" />
+          <rect x="6" y="4" width="1" height="2" fill="#ff9090" />
+          <rect x="22" y="3" width="3" height="3" fill="#1a1a2a" />
+          <rect x="20" y="4" width="3" height="3" fill="#1a1a2a" />
+          <rect x="24" y="4" width="1" height="2" fill="#ff9090" />
+          
+          {/* Head */}
+          <rect x="8" y="6" width="14" height="10" fill="#1a1a2a" />
+          <rect x="6" y="8" width="2" height="6" fill="#1a1a2a" />
+          <rect x="22" y="8" width="2" height="6" fill="#1a1a2a" />
+          
+          {/* Eyes */}
+          <rect x="10" y="9" width="3" height="3" fill={eyeColor} />
+          <rect x="17" y="9" width="3" height="3" fill={eyeColor} />
+          {!blink && !style.half && (
+            <>
+              <rect x="10" y="9" width="1" height="1" fill="#fff" />
+              <rect x="17" y="9" width="1" height="1" fill="#fff" />
+            </>
+          )}
+          {style.half && !blink && (
+            <>
+              <rect x="10" y="9" width="3" height="1" fill="#1a1a2a" />
+              <rect x="17" y="9" width="3" height="1" fill="#1a1a2a" />
+            </>
+          )}
+          
+          {/* Nose */}
+          <rect x="14" y="12" width="2" height="1" fill="#ff9090" />
+          
+          {/* Mouth */}
+          {style.mouth === 'happy' && (
+            <>
+              <rect x="12" y="13" width="1" height="1" fill="#2a2a3a" />
+              <rect x="17" y="13" width="1" height="1" fill="#2a2a3a" />
+              <rect x="13" y="14" width="4" height="1" fill="#2a2a3a" />
+            </>
+          )}
+          {style.mouth === 'worried' && (
+            <>
+              <rect x="13" y="13" width="4" height="1" fill="#2a2a3a" />
+              <rect x="12" y="14" width="1" height="1" fill="#2a2a3a" />
+              <rect x="17" y="14" width="1" height="1" fill="#2a2a3a" />
+            </>
+          )}
+          {style.mouth === 'neutral' && <rect x="13" y="13" width="4" height="1" fill="#2a2a3a" />}
+          
+          {/* Cheeks */}
+          {style.cheeks && (
+            <>
+              <rect x="7" y="11" width="2" height="2" fill="#ffb3c6" opacity="0.5" />
+              <rect x="21" y="11" width="2" height="2" fill="#ffb3c6" opacity="0.5" />
+            </>
+          )}
+          
+          {/* Body */}
+          <rect x="9" y="16" width="12" height="8" fill="#1a1a2a" />
+          <rect x="7" y="18" width="2" height="5" fill="#1a1a2a" />
+          <rect x="21" y="18" width="2" height="5" fill="#1a1a2a" />
+          
+          {/* Paws */}
+          <rect x="9" y="24" width="4" height="3" fill="#1a1a2a" />
+          <rect x="17" y="24" width="4" height="3" fill="#1a1a2a" />
+          
+          {/* Tail */}
+          <rect x={24 + tailX} y="18" width="3" height="2" fill="#1a1a2a" />
+          <rect x={25 + tailX} y="16" width="3" height="2" fill="#1a1a2a" />
+          <rect x={26 + tailX} y="14" width="3" height="2" fill="#1a1a2a" />
+        </svg>
+      );
+    };
+    
+    const LeoBubble = ({ mood, className = '' }) => (
+      <div className={`text-xs italic text-purple-200/70 ${className}`}>
+        <span className="text-purple-300/50">Leo</span>
+        <span className="mx-1.5 text-purple-400/30">·</span>
+        <span>{t(`leo.${mood}`) || t('leo.calm')}</span>
+      </div>
+    );
+    
+    // ============================================================
+    // 🌟 ATMOSPHERE EFFECTS
+    // ============================================================
+    const AtmosphereEffect = ({ type }) => {
+      const [particles, setParticles] = useState([]);
+      
+      useEffect(() => {
+        if (!type) return;
+        const count = type === 'stars' ? 50 : 30;
+        setParticles(Array.from({ length: count }, (_, i) => ({
+          id: i,
+          x: Math.random() * 100,
+          y: Math.random() * 100,
+          size: Math.random() * 2 + 1,
+          delay: Math.random() * 5,
+          duration: 3 + Math.random() * 4,
+        })));
+      }, [type]);
+      
+      if (!type) return null;
+      
+      return (
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          {particles.map(p => {
+            if (type === 'stars') {
+              return (
+                <div key={p.id} className="absolute rounded-full bg-white"
+                     style={{
+                       left: `${p.x}%`, top: `${p.y}%`,
+                       width: `${p.size}px`, height: `${p.size}px`,
+                       animation: `twinkle ${p.duration}s ease-in-out infinite`,
+                       animationDelay: `${p.delay}s`,
+                     }} />
+              );
+            }
+            if (type === 'rain') {
+              return (
+                <div key={p.id} className="absolute bg-blue-200/30 rounded-full"
+                     style={{
+                       left: `${p.x}%`, top: `${p.y}%`,
+                       width: `${p.size}px`, height: `${p.size * 8}px`,
+                       animation: `rain ${p.duration}s linear infinite`,
+                       animationDelay: `${p.delay}s`,
+                     }} />
+              );
+            }
+            if (type === 'snow') {
+              return (
+                <div key={p.id} className="absolute bg-white/60 rounded-full"
+                     style={{
+                       left: `${p.x}%`, top: `${p.y}%`,
+                       width: `${p.size}px`, height: `${p.size}px`,
+                       animation: `snow ${p.duration * 2}s linear infinite`,
+                       animationDelay: `${p.delay}s`,
+                     }} />
+              );
+            }
+            return null;
+          })}
+          {type === 'sun' && <div className="absolute inset-0 bg-gradient-to-b from-amber-500/10 to-transparent" />}
+          {type === 'night' && <div className="absolute inset-0 bg-gradient-to-b from-indigo-950/50 to-transparent" />}
+        </div>
+      );
+    };
+    
+    // ============================================================
+    // 📖 ROMANTIC CHAPTER CONTENT
+    // ============================================================
+    const CHAPTERS = [
+      // CHAPTER 1: RAIN
+      {
+        id: 1,
+        background: 'from-slate-800 via-blue-900 to-slate-900',
+        atmosphere: 'rain',
+        leoMood: 'curious',
+        scenes: [
+          {
+            type: 'moment',
+            content: [
+              { text: "The rain was falling like a love song.", subtext: "Soft. Endless. Beautiful." },
+              { text: "I reached for the last umbrella.", subtext: "Your fingers touched mine." },
+              { text: "My heart forgot how to beat.", subtext: "Then it learned a new rhythm. Yours." },
+              { 
+                text: "We shared the umbrella in silence.",
+                visual: <PixelCouple size={28} holding />,
+              },
+            ],
+          },
+          {
+            type: 'choice',
+            prompt: "A tiny cry from the alley. A small black kitten, alone in the rain.",
+            choices: [
+              { id: 'together', text: "Let's save him together", leoReaction: 'loving', result: "Your hand found mine. We ran through the rain, laughing." },
+              { id: 'gentle', text: "He needs us", leoReaction: 'comfort', result: "You looked at me with those eyes. I knew then—I would follow you anywhere." },
+            ],
+          },
+          {
+            type: 'memory',
+            memoryId: 1,
+            interaction: 'hold',
+            visual: (
+              <div className="w-36 h-36 rounded-full bg-gradient-to-br from-blue-800/40 to-slate-800/40 flex items-center justify-center border border-white/10">
+                <div className="flex items-end gap-1">
+                  <PixelBoy size={24} />
+                  <PixelLeo mood="curious" size={32} />
+                  <PixelGirl size={24} />
+                </div>
+              </div>
+            ),
+          },
+        ],
+      },
+      
+      // CHAPTER 2: SUN
+      {
+        id: 2,
+        background: 'from-amber-900 via-orange-900 to-amber-950',
+        atmosphere: 'sun',
+        leoMood: 'playful',
+        scenes: [
+          {
+            type: 'moment',
+            content: [
+              { text: "Our first apartment was tiny.", subtext: "But your presence made it infinite." },
+              { text: "I learned you hum while making coffee.", subtext: "It's the most beautiful melody I know." },
+              { 
+                text: "Leo found his sunbeam spot at 2:47 PM.",
+                visual: <PixelLeo mood="sleepy" size={48} className="mx-auto" />,
+              },
+              { text: "You found your spot too.", subtext: "Right here, next to me." },
+            ],
+          },
+          {
+            type: 'choice',
+            prompt: "Sunday morning. Golden light. You're still sleeping.",
+            choices: [
+              { id: 'kiss', text: "Wake you with a gentle kiss", leoReaction: 'loving', result: "Your sleepy smile could heal the world." },
+              { id: 'watch', text: "Watch you sleep a little longer", leoReaction: 'calm', result: "You're most beautiful when you don't know I'm looking." },
+            ],
+          },
+          {
+            type: 'memory',
+            memoryId: 2,
+            interaction: 'wait',
+            visual: (
+              <div className="w-36 h-36 rounded-full bg-gradient-to-br from-amber-500/30 to-orange-500/30 flex items-center justify-center animate-pulse-soft">
+                <PixelLeo mood="sleepy" size={56} />
+              </div>
+            ),
+          },
+        ],
+      },
+      
+      // CHAPTER 3: STORM - FIXED
+      {
+        id: 3,
+        background: 'from-stone-800 via-slate-900 to-stone-900',
+        atmosphere: 'night',
+        leoMood: 'worried',
+        scenes: [
+          {
+            type: 'moment',
+            content: [
+              { text: "Sometimes love speaks in silence.", subtext: "And silence can be so loud." },
+              { text: "I said something wrong.", subtext: "The words came out broken." },
+              { text: "We sat on opposite ends of the couch.", subtext: "Miles apart. Hearts still connected." },
+            ],
+          },
+          {
+            type: 'moment',
+            content: [
+              { 
+                text: "Leo walked slowly between us.",
+                visual: <PixelLeo mood="comfort" size={48} className="mx-auto" />,
+              },
+              { text: "He curled up exactly in the middle.", subtext: "A bridge made of fur and love." },
+              { text: "Sometimes the smallest hearts carry the biggest love." },
+            ],
+          },
+          {
+            type: 'choice',
+            prompt: "Our eyes meet across the distance.",
+            choices: [
+              { id: 'speak', text: "I'm sorry. I love you.", leoReaction: 'loving', result: "Three words. Your tears. My arms around you. Home again." },
+              { id: 'reach', text: "Reach for your hand", leoReaction: 'comfort', result: "Your fingers intertwined with mine. No words needed." },
+            ],
+          },
+          {
+            type: 'memory',
+            memoryId: 3,
+            interaction: 'click',
+            visual: (
+              <div className="w-36 h-36 rounded-full bg-gradient-to-br from-stone-700/50 to-slate-800/50 flex items-center justify-center border border-white/10">
+                <div className="flex items-end gap-2">
+                  <PixelBoy size={22} />
+                  <PixelLeo mood="comfort" size={36} />
+                  <PixelGirl size={22} />
+                </div>
+              </div>
+            ),
+          },
+        ],
+      },
+      
+      // CHAPTER 4: SNOW
+      {
+        id: 4,
+        background: 'from-slate-800 via-indigo-950 to-blue-950',
+        atmosphere: 'snow',
+        leoMood: 'loving',
+        scenes: [
+          {
+            type: 'moment',
+            content: [
+              { text: "The first snowfall of winter.", subtext: "Magic falling from the sky." },
+              { 
+                text: "We watched through the window, wrapped in the same blanket.",
+                visual: <PixelCouple size={24} holding />,
+              },
+              { text: "Your warmth is the only home I need." },
+            ],
+          },
+          {
+            type: 'choice',
+            prompt: "Snowflakes on your eyelashes. Your smile.",
+            choices: [
+              { id: 'kiss', text: "Kiss the snowflakes away", leoReaction: 'loving', result: "Your cold nose. Your warm lips. Perfect contrast." },
+              { id: 'hold', text: "Hold you closer", leoReaction: 'comfort', result: "Two hearts beating as one, while the world turns white." },
+            ],
+          },
+          {
+            type: 'memory',
+            memoryId: 4,
+            interaction: 'hold',
+            visual: (
+              <div className="w-36 h-36 rounded-full bg-gradient-to-br from-blue-800/40 to-indigo-900/40 flex items-center justify-center border border-white/20">
+                <div className="flex flex-col items-center">
+                  <PixelCouple size={24} holding />
+                  <PixelLeo mood="loving" size={32} className="mt-1" />
+                </div>
+              </div>
+            ),
+          },
+        ],
+      },
+      
+      // CHAPTER 5: SPRING
+      {
+        id: 5,
+        background: 'from-emerald-950 via-green-900 to-teal-950',
+        atmosphere: 'stars',
+        leoMood: 'playful',
+        scenes: [
+          {
+            type: 'moment',
+            content: [
+              { text: "We planted our first garden together.", subtext: "Seeds of tomorrow." },
+              { text: "You got dirt on your nose.", subtext: "I've never loved you more." },
+              { 
+                text: "Leo supervised everything.",
+                visual: <PixelLeo mood="playful" size={48} className="mx-auto" />,
+                subtext: "Chief Inspector of Growing Things."
+              },
+            ],
+          },
+          {
+            type: 'choice',
+            prompt: "Under the stars, you asked about the future.",
+            choices: [
+              { id: 'dreams', text: "I dream of forever with you", leoReaction: 'loving', result: "Your eyes sparkled brighter than any star above us." },
+              { id: 'now', text: "Every moment with you is the future I want", leoReaction: 'loving', result: "You kissed me under a million stars. Time stopped." },
+            ],
+          },
+          {
+            type: 'memory',
+            memoryId: 5,
+            interaction: 'click',
+            visual: (
+              <div className="w-36 h-36 rounded-full bg-gradient-to-br from-green-700/40 to-emerald-900/40 flex items-center justify-center">
+                <div className="flex items-end gap-1">
+                  <PixelBoy size={24} />
+                  <div className="text-2xl mb-1">🌱</div>
+                  <PixelGirl size={24} />
+                </div>
+              </div>
+            ),
+          },
+        ],
+      },
+      
+      // CHAPTER 6: HOME
+      {
+        id: 6,
+        background: 'from-amber-900 via-orange-950 to-stone-900',
+        atmosphere: 'sun',
+        leoMood: 'calm',
+        scenes: [
+          {
+            type: 'moment',
+            content: [
+              { text: "New walls. Empty rooms.", subtext: "But not for long." },
+              { text: "Every box we unpacked was a memory.", subtext: "Building our story, one moment at a time." },
+              { 
+                text: "Leo claimed the window seat immediately.",
+                visual: <PixelLeo mood="calm" size={48} className="mx-auto" />,
+              },
+            ],
+          },
+          {
+            type: 'moment',
+            content: [
+              { text: "You hung our first picture.", subtext: "Us. Under that umbrella. Where it all began." },
+              { 
+                text: "Home isn't a place. It's you.",
+                visual: <PixelCouple size={28} holding />,
+              },
+            ],
+          },
+          {
+            type: 'memory',
+            memoryId: 6,
+            interaction: 'hold',
+            visual: (
+              <div className="w-36 h-36 rounded-lg bg-gradient-to-br from-amber-800/40 to-stone-800/40 flex items-center justify-center border border-amber-600/30">
+                <div className="flex flex-col items-center">
+                  <PixelCouple size={24} holding />
+                  <PixelLeo mood="calm" size={36} className="mt-1" />
+                </div>
+              </div>
+            ),
+          },
+        ],
+      },
+      
+      // CHAPTER 7: FOREVER
+      {
+        id: 7,
+        background: 'from-purple-950 via-pink-950 to-indigo-950',
+        atmosphere: 'stars',
+        leoMood: 'loving',
+        scenes: [
+          {
+            type: 'moment',
+            content: [
+              { text: "Years have painted our story.", subtext: "Every sunrise, every storm, every quiet evening." },
+              { text: "Leo is older now. Slower.", subtext: "But his love never changed. Neither did ours." },
+              { 
+                text: "I look at you across the room.",
+                visual: <PixelCouple size={28} holding />,
+              },
+            ],
+          },
+          {
+            type: 'moment',
+            content: [
+              { text: "And I know.", subtext: "In every lifetime, I would find you." },
+              { text: "In every universe, I would choose you." },
+              { 
+                text: "This isn't a fairy tale ending.",
+                subtext: "It's something better. It's real.",
+                visual: (
+                  <div className="flex items-end gap-2">
+                    <PixelBoy size={28} />
+                    <PixelLeo mood="loving" size={40} />
+                    <PixelGirl size={28} />
+                  </div>
+                ),
+              },
+            ],
+          },
+          {
+            type: 'memory',
+            memoryId: 7,
+            interaction: 'wait',
+            visual: (
+              <div className="w-40 h-40 rounded-full bg-gradient-to-br from-purple-600/30 to-pink-600/30 flex items-center justify-center animate-pulse-soft border border-pink-400/20">
+                <div className="flex flex-col items-center">
+                  <PixelCouple size={28} holding />
+                  <PixelLeo mood="loving" size={40} className="mt-2" />
+                  <div className="flex gap-1 mt-2">
+                    <PixelHeart filled size={14} animate />
+                    <PixelHeart filled size={14} animate />
+                    <PixelHeart filled size={14} animate />
+                  </div>
+                </div>
+              </div>
+            ),
+          },
+        ],
+      },
+    ];
+    
+    // ============================================================
+    // 🎮 SCENE COMPONENTS
+    // ============================================================
+    
+    const MomentScene = ({ content, atmosphere, leoMood, onComplete }) => {
+      const [current, setCurrent] = useState(0);
+      const [visible, setVisible] = useState(true);
+      
+      const isLast = current >= content.length - 1;
+      
+      const advance = useCallback(() => {
+        if (isLast) {
+          onComplete?.();
+        } else {
+          setVisible(false);
+          setTimeout(() => {
+            setCurrent(c => c + 1);
+            setVisible(true);
+          }, 400);
+        }
+      }, [isLast, onComplete]);
+      
+      const moment = content[current] || {};
+      
+      return (
+        <div className="min-h-screen flex flex-col items-center justify-center p-6 relative" onClick={advance}>
+          <AtmosphereEffect type={atmosphere} />
+          
+          <div className={`text-center max-w-sm transition-opacity duration-500 ${visible ? 'opacity-100' : 'opacity-0'}`}>
+            {moment.visual && <div className="mb-8 flex justify-center animate-float">{moment.visual}</div>}
+            {moment.text && (
+              <p className="font-display text-xl text-white/90 leading-relaxed mb-4 animate-fade-slide-up">
+                {moment.text}
+              </p>
+            )}
+            {moment.subtext && (
+              <p className="text-sm text-white/50 italic animate-fade-in" style={{ animationDelay: '0.3s' }}>
+                {moment.subtext}
+              </p>
+            )}
+          </div>
+          
+          <div className="absolute bottom-20 left-1/2 -translate-x-1/2">
+            <PixelLeo mood={leoMood} size={36} />
+            <LeoBubble mood={leoMood} className="mt-2 text-center" />
+          </div>
+          
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-1.5">
+            {content.map((_, i) => (
+              <div key={i} className={`w-1.5 h-1.5 rounded-full transition-all duration-300
+                                      ${i === current ? 'bg-white/80 scale-125' : i < current ? 'bg-white/40' : 'bg-white/20'}`} />
+            ))}
+          </div>
+          
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-xs text-white/30 animate-pulse">
+            {t('ui.tapToContinue')}
+          </div>
+        </div>
+      );
+    };
+    
+    const ChoiceScene = ({ prompt, choices, leoMood, onChoice, onComplete }) => {
+      const [selected, setSelected] = useState(null);
+      const [showResult, setShowResult] = useState(false);
+      
+      const handleChoice = (choice) => {
+        setSelected(choice);
+        onChoice?.(choice);
+        setTimeout(() => setShowResult(true), 300);
+        setTimeout(() => onComplete?.(choice), 3000);
+      };
+      
+      return (
+        <div className="min-h-screen flex flex-col items-center justify-center p-6 relative">
+          <div className="mb-8 animate-float">
+            <PixelLeo mood={selected ? selected.leoReaction : leoMood} size={56} className="transition-all duration-500" />
+          </div>
+          
+          {!selected ? (
+            <>
+              <p className="font-display text-xl text-white/90 text-center mb-10 max-w-xs animate-fade-slide-up">
+                {prompt}
+              </p>
+              <div className="flex flex-col gap-4 w-full max-w-xs">
+                {choices.map((choice, i) => (
+                  <button
+                    key={choice.id}
+                    onClick={() => handleChoice(choice)}
+                    className="px-6 py-4 rounded-xl bg-white/5 border border-white/10
+                             hover:bg-white/10 hover:border-pink-400/30 
+                             transition-all duration-300 text-white/80 font-display text-lg
+                             animate-fade-slide-up"
+                    style={{ animationDelay: `${0.2 + i * 0.1}s` }}
+                  >
+                    {choice.text}
+                  </button>
+                ))}
+              </div>
+            </>
+          ) : (
+            <div className={`text-center max-w-xs transition-opacity duration-500 ${showResult ? 'opacity-100' : 'opacity-0'}`}>
+              <p className="font-display text-lg text-white/80 italic leading-relaxed">
+                {selected.result}
+              </p>
+              <div className="mt-4 flex justify-center">
+                <PixelHeart filled size={20} animate />
+              </div>
+              <LeoBubble mood={selected.leoReaction} className="mt-4 text-center" />
+            </div>
+          )}
+        </div>
+      );
+    };
+    
+    const MemoryScene = ({ memoryId, interaction, visual, leoMood, onUnlock, onComplete }) => {
+      const [progress, setProgress] = useState(0);
+      const [unlocked, setUnlocked] = useState(false);
+      const holdRef = useRef(null);
+      
+      const memory = t(`memories.${memoryId}`);
+      
+      const startHold = () => {
+        if (interaction !== 'hold' || unlocked) return;
+        holdRef.current = setInterval(() => setProgress(p => Math.min(p + 5, 100)), 50);
+      };
+      
+      const endHold = () => {
+        if (holdRef.current) {
+          clearInterval(holdRef.current);
+          if (progress < 100) setProgress(0);
+        }
+      };
+      
+      const handleClick = () => {
+        if (interaction === 'click' && !unlocked) setProgress(100);
+      };
+      
+      useEffect(() => {
+        if (interaction === 'wait' && !unlocked) {
+          const timer = setInterval(() => setProgress(p => Math.min(p + 2, 100)), 100);
+          return () => clearInterval(timer);
+        }
+      }, [interaction, unlocked]);
+      
+      useEffect(() => {
+        if (progress >= 100 && !unlocked) {
+          setUnlocked(true);
+          onUnlock?.(memoryId);
+        }
+      }, [progress, unlocked, memoryId, onUnlock]);
+      
+      return (
+        <div className="min-h-screen flex flex-col items-center justify-center p-6 relative">
+          {!unlocked ? (
+            <>
+              <div
+                className={`relative mb-8 ${interaction === 'click' ? 'cursor-pointer transform hover:scale-105 transition-transform' : ''}`}
+                onClick={handleClick}
+                onMouseDown={startHold}
+                onMouseUp={endHold}
+                onMouseLeave={endHold}
+                onTouchStart={startHold}
+                onTouchEnd={endHold}
+              >
+                {visual}
+                {(interaction === 'hold' || interaction === 'wait') && (
+                  <svg className="absolute inset-0 w-full h-full" style={{ transform: 'rotate(-90deg)' }}>
+                    <circle cx="50%" cy="50%" r="45%" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="3" />
+                    <circle cx="50%" cy="50%" r="45%" fill="none" stroke="rgba(236, 72, 153, 0.8)" strokeWidth="3"
+                            strokeDasharray={`${progress * 2.83} 283`} className="transition-all duration-100" />
+                  </svg>
+                )}
+              </div>
+              <p className="text-sm text-white/40">
+                {interaction === 'click' && 'tap to unlock memory'}
+                {interaction === 'hold' && 'hold to unlock memory'}
+                {interaction === 'wait' && 'wait...'}
+              </p>
+            </>
+          ) : (
+            <div className="text-center animate-fade-slide-up">
+              <div className="mb-6 flex justify-center gap-2">
+                <PixelStar filled size={24} className="animate-float" />
+                <PixelHeart filled size={24} animate />
+                <PixelStar filled size={24} className="animate-float" style={{ animationDelay: '0.5s' }} />
+              </div>
+              <p className="text-xs text-pink-300/70 uppercase tracking-widest mb-2">Memory Unlocked</p>
+              <h3 className="font-display text-2xl text-white mb-3">{memory?.title}</h3>
+              <p className="font-display text-lg text-white/70 italic max-w-xs">"{memory?.text}"</p>
+              <button onClick={onComplete}
+                      className="mt-8 px-6 py-2 rounded-lg bg-white/10 text-white/80 hover:bg-white/20 transition-all">
+                {t('ui.continue')}
+              </button>
+            </div>
+          )}
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
+            <PixelLeo mood={unlocked ? 'loving' : leoMood} size={36} />
+          </div>
+        </div>
+      );
+    };
+    
+    // ============================================================
+    // 🗺️ MAP & ALBUM
+    // ============================================================
+    const JourneyMap = ({ gameState, onSelectChapter, onOpenAlbum }) => {
+      const [hovered, setHovered] = useState(null);
+      
+      const positions = [
+        { x: 50, y: 88 }, { x: 25, y: 74 }, { x: 55, y: 58 },
+        { x: 30, y: 44 }, { x: 60, y: 30 }, { x: 35, y: 18 }, { x: 50, y: 5 },
+      ];
+      
+      const colors = [
+        { main: '#60a5fa', glow: 'rgba(96, 165, 250, 0.4)' },
+        { main: '#fbbf24', glow: 'rgba(251, 191, 36, 0.4)' },
+        { main: '#78716c', glow: 'rgba(120, 113, 108, 0.4)' },
+        { main: '#a5b4fc', glow: 'rgba(165, 180, 252, 0.4)' },
+        { main: '#4ade80', glow: 'rgba(74, 222, 128, 0.4)' },
+        { main: '#fb923c', glow: 'rgba(251, 146, 60, 0.4)' },
+        { main: '#e879f9', glow: 'rgba(232, 121, 249, 0.4)' },
+      ];
+      
+      const isUnlocked = (id) => gameState.unlockedChapters.includes(id);
+      const isCompleted = (id) => gameState.completedChapters.includes(id);
+      const hasMemory = (id) => gameState.memories.includes(id);
+      
+      return (
+        <div className="relative w-full max-w-md mx-auto aspect-[3/4] rounded-2xl overflow-hidden"
+             style={{ background: 'linear-gradient(180deg, #0a0a15 0%, #151530 50%, #0a0a15 100%)' }}>
+          <AtmosphereEffect type="stars" />
+          
+          <svg className="absolute inset-0 w-full h-full" style={{ zIndex: 5 }}>
+            <defs>
+              <linearGradient id="mapPath" x1="0%" y1="100%" x2="0%" y2="0%">
+                <stop offset="0%" stopColor="#6366f1" stopOpacity="0.6" />
+                <stop offset="100%" stopColor="#ec4899" stopOpacity="0.6" />
+              </linearGradient>
+            </defs>
+            {positions.slice(0, -1).map((pos, i) => {
+              const next = positions[i + 1];
+              const unlocked = isUnlocked(i + 1);
+              return (
+                <line key={i} x1={`${pos.x}%`} y1={`${pos.y}%`} x2={`${next.x}%`} y2={`${next.y}%`}
+                      stroke={unlocked ? "url(#mapPath)" : "#2a2a4a"} strokeWidth="3"
+                      strokeDasharray={unlocked ? "0" : "6 4"} strokeLinecap="round" opacity={unlocked ? 0.8 : 0.3} />
+              );
+            })}
+          </svg>
+          
+          {CHAPTERS.map((chapter, i) => {
+            const pos = positions[i];
+            const unlocked = isUnlocked(chapter.id);
+            const completed = isCompleted(chapter.id);
+            const memory = hasMemory(chapter.id);
+            const color = colors[i];
+            
+            return (
+              <button key={chapter.id}
+                      className={`absolute transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 z-10
+                                 ${unlocked ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'}
+                                 ${hovered === chapter.id && unlocked ? 'scale-110 z-20' : ''}`}
+                      style={{ left: `${pos.x}%`, top: `${pos.y}%` }}
+                      onClick={() => unlocked && onSelectChapter(chapter.id)}
+                      onMouseEnter={() => setHovered(chapter.id)}
+                      onMouseLeave={() => setHovered(null)}
+                      disabled={!unlocked}>
+                {unlocked && (
+                  <div className="absolute inset-0 rounded-full transition-opacity duration-300"
+                       style={{ width: '60px', height: '60px', margin: '-6px',
+                                background: `radial-gradient(circle, ${color.glow} 0%, transparent 70%)`,
+                                opacity: hovered === chapter.id ? 1 : 0.5 }} />
+                )}
+                <div className="relative w-12 h-12 rounded-full flex items-center justify-center border-2 transition-all"
+                     style={{ background: unlocked ? `linear-gradient(135deg, ${color.main}40, ${color.main}20)` : 'rgba(30,30,50,0.8)',
+                              borderColor: unlocked ? `${color.main}80` : 'rgba(60,60,80,0.5)',
+                              boxShadow: unlocked ? `0 0 20px ${color.glow}` : 'none' }}>
+                  {unlocked ? <span className="text-white font-semibold">{completed ? '✓' : chapter.id}</span> : <PixelLock size={16} />}
+                  {memory && <div className="absolute -top-1 -right-1"><PixelStar filled size={12} /></div>}
+                </div>
+                {hovered === chapter.id && unlocked && (
+                  <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 whitespace-nowrap
+                                 px-2 py-1 rounded bg-black/60 text-xs text-white/80 animate-fade-in">
+                    {t(`chapters.${chapter.id}.name`)}
+                  </div>
+                )}
+              </button>
+            );
+          })}
+          
+          <div className="absolute z-15 transform -translate-x-1/2 pointer-events-none animate-float"
+               style={{ left: `${positions[Math.min(gameState.currentChapter - 1, 6)].x}%`,
+                        top: `${positions[Math.min(gameState.currentChapter - 1, 6)].y + 8}%` }}>
+            <PixelCouple size={16} />
+          </div>
+          
+          <div className="absolute top-4 left-0 right-0 text-center z-20">
+            <p className="text-xs text-white/40 uppercase tracking-[0.2em]">Our Journey</p>
+          </div>
+          
+          <button onClick={onOpenAlbum}
+                  className="absolute bottom-4 right-4 z-20 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10
+                           text-xs text-white/60 hover:bg-white/10 hover:text-white/80 transition-all">
+            <span className="mr-1.5">♥</span> {t('ui.album')} ({gameState.memories.length}/7)
+          </button>
+        </div>
+      );
+    };
+    
+    const MemoryAlbum = ({ memories, onClose }) => (
+      <div className="min-h-screen p-6 bg-gradient-to-b from-slate-900 via-purple-950 to-slate-900">
+        <div className="flex justify-between items-center mb-8">
+          <h2 className="font-display text-2xl text-white">Our Memories</h2>
+          <button onClick={onClose} className="text-white/50 hover:text-white transition-colors">✕</button>
+        </div>
+        <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
+          {[1,2,3,4,5,6,7].map(id => {
+            const collected = memories.includes(id);
+            const memory = t(`memories.${id}`);
+            return (
+              <div key={id} className={`aspect-square rounded-xl p-4 flex flex-col items-center justify-center transition-all
+                                       ${collected ? 'bg-white/5 border border-pink-500/20' : 'bg-white/[0.02] border border-white/5'}`}>
+                {collected ? <PixelHeart filled size={28} /> : <PixelMemory collected={false} size={28} />}
+                {collected ? (
+                  <>
+                    <p className="text-xs text-pink-300/80 mt-3 text-center font-medium">{memory?.title}</p>
+                    <p className="text-[10px] text-white/40 mt-1 text-center italic">"{memory?.text}"</p>
+                  </>
+                ) : (
+                  <p className="text-xs text-white/20 mt-3">{t('ui.locked')}</p>
+                )}
+              </div>
+            );
+          })}
+        </div>
+        <div className="text-center mt-8">
+          <p className="text-sm text-white/30">{memories.length} of 7 memories collected</p>
+        </div>
+      </div>
+    );
+    
+    // ============================================================
+    // 🐱 LEO HUD
+    // ============================================================
+    const LeoHUD = ({ gameState, onPetLeo }) => {
+      const [petting, setPetting] = useState(false);
+      
+      const handlePet = () => {
+        setPetting(true);
+        onPetLeo();
+        setTimeout(() => setPetting(false), 1500);
+      };
+      
+      return (
+        <div className="fixed top-0 left-0 right-0 z-50 pointer-events-none"
+             style={{ background: 'linear-gradient(180deg, rgba(10,10,20,0.95) 0%, transparent 100%)' }}>
+          <div className="max-w-lg mx-auto flex items-center gap-3 p-3 pointer-events-auto">
+            <button onClick={handlePet} title={t('ui.petLeo')}
+                    className={`relative p-1 rounded-xl transition-all duration-300 ${petting ? 'scale-110 bg-pink-500/20' : 'hover:bg-white/5'}`}>
+              <PixelLeo mood={petting ? 'loving' : gameState.leoMood} size={36} />
+              {petting && <div className="absolute -top-1 -right-1 animate-heartbeat"><PixelHeart filled size={12} /></div>}
+            </button>
+            <LeoBubble mood={petting ? 'loving' : gameState.leoMood} className="flex-1" />
+            <div className="flex gap-0.5">
+              {[1,2,3,4,5,6,7].map(i => <PixelHeart key={i} filled={gameState.memories.includes(i)} size={10} />)}
+            </div>
+          </div>
+        </div>
+      );
+    };
+    
+    // ============================================================
+    // 🎮 CHAPTER PLAYER - FIXED
+    // ============================================================
+    const ChapterPlayer = ({ chapter, gameState, onComplete, onBack, onUpdateState }) => {
+      const [sceneIndex, setSceneIndex] = useState(0);
+      const [leoMood, setLeoMood] = useState(chapter.leoMood);
+      
+      const scenes = chapter.scenes;
+      const currentScene = scenes[sceneIndex];
+      
+      const advanceScene = useCallback(() => {
+        if (sceneIndex >= scenes.length - 1) {
+          onComplete(chapter.id);
+        } else {
+          setSceneIndex(s => s + 1);
+        }
+      }, [sceneIndex, scenes.length, chapter.id, onComplete]);
+      
+      const handleChoice = (choice) => {
+        setLeoMood(choice.leoReaction);
+        onUpdateState({ leoMood: choice.leoReaction, choices: { ...gameState.choices, [chapter.id]: choice.id } });
+      };
+      
+      const handleMemoryUnlock = (memoryId) => {
+        if (!gameState.memories.includes(memoryId)) {
+          onUpdateState({ memories: [...gameState.memories, memoryId] });
+        }
+      };
+      
+      const renderScene = () => {
+        if (!currentScene) return null;
+        
+        switch (currentScene.type) {
+          case 'moment':
+            return <MomentScene key={`moment-${sceneIndex}`} content={currentScene.content} atmosphere={chapter.atmosphere}
+                                leoMood={leoMood} onComplete={advanceScene} />;
+          case 'choice':
+            return <ChoiceScene key={`choice-${sceneIndex}`} prompt={currentScene.prompt} choices={currentScene.choices}
+                                leoMood={leoMood} onChoice={handleChoice} onComplete={advanceScene} />;
+          case 'memory':
+            return <MemoryScene key={`memory-${sceneIndex}`} memoryId={currentScene.memoryId} interaction={currentScene.interaction}
+                                visual={currentScene.visual} leoMood={leoMood} onUnlock={handleMemoryUnlock} onComplete={advanceScene} />;
+          default:
+            return null;
+        }
+      };
+      
+      return (
+        <div className={`min-h-screen bg-gradient-to-br ${chapter.background}`}>
+          <div className="absolute top-14 left-0 right-0 text-center z-10">
+            <p className="text-xs text-white/40 uppercase tracking-[0.2em]">{t(`chapters.${chapter.id}.name`)}</p>
+            <p className="text-sm text-white/60 italic mt-1">{t(`chapters.${chapter.id}.theme`)}</p>
+          </div>
+          <div className="pt-20">{renderScene()}</div>
+          <button onClick={onBack} className="fixed bottom-4 left-4 z-20 text-xs text-white/30 hover:text-white/60 transition-colors">
+            ← {t('ui.back')}
+          </button>
+        </div>
+      );
+    };
+    
+    // ============================================================
+    // 🎮 MAIN APP
+    // ============================================================
+    const App = () => {
+      const [gameState, setGameState] = useState(loadGame);
+      const [view, setView] = useState('map');
+      const [activeChapter, setActiveChapter] = useState(null);
+      
+      useEffect(() => { saveGame(gameState); }, [gameState]);
+      
+      const updateState = (updates) => setGameState(prev => ({ ...prev, ...updates }));
+      
+      const handleSelectChapter = (chapterId) => {
+        const chapter = CHAPTERS.find(c => c.id === chapterId);
+        if (chapter) {
+          setActiveChapter(chapter);
+          setView('chapter');
+          updateState({ leoMood: chapter.leoMood });
+        }
+      };
+      
+      const handleChapterComplete = (chapterId) => {
+        const nextChapter = chapterId + 1;
+        updateState({
+          completedChapters: gameState.completedChapters.includes(chapterId) ? gameState.completedChapters : [...gameState.completedChapters, chapterId],
+          unlockedChapters: nextChapter <= 7 && !gameState.unlockedChapters.includes(nextChapter) ? [...gameState.unlockedChapters, nextChapter] : gameState.unlockedChapters,
+          currentChapter: Math.min(nextChapter, 7),
+          leoMood: 'calm',
+        });
+        setView('map');
+        setActiveChapter(null);
+      };
+      
+      const handlePetLeo = () => {
+        updateState({ leoInteractions: gameState.leoInteractions + 1, leoMood: 'loving' });
+        setTimeout(() => updateState({ leoMood: 'calm' }), 2000);
+      };
+      
+      return (
+        <div className="min-h-screen bg-slate-950">
+          {view !== 'album' && <LeoHUD gameState={gameState} onPetLeo={handlePetLeo} />}
+          
+          <div className={view !== 'album' ? 'pt-14' : ''}>
+            {view === 'map' && (
+              <div className="min-h-screen flex flex-col items-center justify-center p-4">
+                <div className="text-center mb-6">
+                  <h1 className="font-display text-3xl text-white mb-1" style={{ textShadow: '0 0 40px rgba(236, 72, 153, 0.3)' }}>
+                    {t('title')}
+                  </h1>
+                  <p className="text-sm text-pink-300/50 italic">{t('subtitle')}</p>
+                </div>
+                <JourneyMap gameState={gameState} onSelectChapter={handleSelectChapter} onOpenAlbum={() => setView('album')} />
+                <div className="mt-6 text-center text-xs text-white/20">
+                  {gameState.completedChapters.length === 7
+                    ? '♥ In every lifetime, I would find you ♥'
+                    : `Chapter ${gameState.currentChapter} of 7`}
+                </div>
+              </div>
+            )}
+            
+            {view === 'chapter' && activeChapter && (
+              <ChapterPlayer chapter={activeChapter} gameState={gameState} onComplete={handleChapterComplete}
+                             onBack={() => { setView('map'); setActiveChapter(null); }} onUpdateState={updateState} />
+            )}
+            
+            {view === 'album' && <MemoryAlbum memories={gameState.memories} onClose={() => setView('map')} />}
+          </div>
+        </div>
+      );
+    };
+    
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
